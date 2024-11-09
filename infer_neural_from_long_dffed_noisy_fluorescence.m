@@ -1,31 +1,30 @@
 % This script takes a dffed fluorescence trace and 
-% REUTRNS AN INFERRED NUERAL SPIKING RATE activity trace.
+% returns an inferred neural spiking rate trace.
+% It finds the best minimal penalty, lambda (required for noise removal), that fits the data.
+% Knowing gamma (the calcium decay in a time bin) is required to run the script.
+% Time bins should be longer than the typical rise time of the calcium.
 
-% It finds the best minimal lambda (a penalty required for noise removal)
-% that fits the data.
+% If the fluorescence trace includes 50,000 points or more, 
+% the script is expected to perform well. 
+% Inferring a trace with 10,000 points or less is possible, 
+% but reducing t_trace to 400 is recommended).
 
-% To run the script one needs to KNOW GAMMA (the calcium decay in a bin).
-
-% Bins should be longer than the typical rise time of the calcium.
-% The longer your recordings are the better
-% (50,000 points is great. 10,000 is possible but reducing t_trace to 400
-% is recomended).
 
 close all
 clear
 
-% Gamma - the percentage of calcium left after a single recording step,
+% gamma - the percentage of calcium left after a single recording step,
 % for gcamp6s in 10hz recordings:
 gamma_10hz = 0.95; 
 gamma = gamma_10hz^(1/1.5); % PLACE YOUR OWN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 gamma_d = gamma^2;
 
-t_trace = 1000; % should be an even number, 400 and above are recomended
+t_trace = 1000; % should be an even number, 400 and above is recomended
 odd_indx = 1:2:t_trace-1;
 even_indx = 2:2:t_trace;
 
-% For later use (to rebuild the calcium)
+% for later use (to rebuild the calcium)
 Dinv_d = zeros(t_trace/2); 
 insert_vec = 1;
 for k = 1:t_trace/2
