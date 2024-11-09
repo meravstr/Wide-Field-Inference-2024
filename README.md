@@ -7,7 +7,7 @@ https://www.biorxiv.org/content/10.1101/2024.10.18.619111v1.abstract
 To start, follow one of the examples according to the scenario that fits your data best:
 A. You have long (hour) recordings and 
 (i) You wish to maintain as much information as possible in the inferred spiking rates. infer_neural_from_long_dffed_noisy_fluorescence.m
-(ii) You wish to smooth the results. another_example_fluorescence_audio_gcamp6.m
+(ii) You wish to smooth the results. infer_neural_from_long_dffed_noisy_neural.m
 B. You have multiple short trial recordings and 
 (i) You wish to maintain as much information as possible in the inferred spiking rates. infer_neural_from_short_dffed_noisy_fluorescence.m
 (ii) You wish to smooth the results*. (* no example is available yet for this case)
