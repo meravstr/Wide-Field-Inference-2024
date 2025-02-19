@@ -1,30 +1,31 @@
 % This script takes a dffed fluorescence trace and 
-% returns an inferred neural spiking rate trace.
-% It finds the best minimal penalty, lambda (required for noise removal), that fits the data.
-% Knowing gamma (the calcium decay in a time bin) is required to run the script.
-% Time bins should be longer than the typical rise time of the calcium.
+% REUTRNS AN INFERRED NUERAL SPIKING RATE activity trace.
 
-% If the fluorescence trace includes 50,000 points or more, 
-% the script is expected to perform well. 
-% Inferring a trace with 10,000 points or less is possible, 
-% but reducing t_trace to 400 is recommended).
+% It finds the best minimal lambda (a penalty required for noise removal)
+% that fits the data.
 
+% To run the script one needs to KNOW GAMMA (the calcium decay in a bin).
+
+% Bins should be longer than the typical rise time of the calcium.
+% The longer your recordings are the better
+% (50,000 points is great. 10,000 is possible but reducing t_trace to 400
+% is recomended).
 
 close all
 clear
 
-% gamma - the percentage of calcium left after a single recording step,
+% Gamma - the percentage of calcium left after a single recording step,
 % for gcamp6s in 10hz recordings:
 gamma_10hz = 0.95; 
 gamma = gamma_10hz^(1/1.5); % PLACE YOUR OWN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 gamma_d = gamma^2;
 
-t_trace = 1000; % should be an even number, 400 and above is recomended
+t_trace = 1000; % should be an even number, 400 and above are recomended
 odd_indx = 1:2:t_trace-1;
 even_indx = 2:2:t_trace;
 
-% for later use (to rebuild the calcium)
+% For later use (to rebuild the calcium)
 Dinv_d = zeros(t_trace/2); 
 insert_vec = 1;
 for k = 1:t_trace/2
@@ -75,9 +76,9 @@ for i_lambda = 1:length(all_lambda)
     act_odd_nodc = act_odd-repmat(mean(act_odd,1),t_trace/2,1);
 
     % Checking deviations from predictions
-    err_cf_oe = (predicts_c_odd_nodc-act_even_nodc(2:end,:)).^2;
+    err_cf_oe = (predicts_c_even_nodc-act_even_nodc(2:end,:)).^2;
     mean_err_cf_oe_per_trial = (2/t_trace)*sum(err_cf_oe,1);
-    err_cf_eo = (predicts_c_even_nodc-act_odd_nodc(2:end,:)).^2;
+    err_cf_eo = (predicts_c_odd_nodc-act_odd_nodc(1:end-1,:)).^2;
     mean_err_cf_eo_per_trial = (2/t_trace)*sum(err_cf_eo,1);
     mean_err_cf_per_trial = (mean_err_cf_oe_per_trial+mean_err_cf_eo_per_trial)/2;
     std_err_cf_per_trial = sqrt(((mean_err_cf_oe_per_trial-mean_err_cf_per_trial).^2+(mean_err_cf_eo_per_trial-mean_err_cf_per_trial).^2)/2);
@@ -104,7 +105,7 @@ best_min_lambda = all_lambda(find(mean_err_cf-(min_err+mean_std_err_cf(lambda_in
 
 %% Now we infer
 
-lambda = 0.1; % YOUR BEST LAMBDA GOES HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+lambda = 1; % YOUR BEST LAMBDA GOES HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t_trace = 1000; % should be a multiplication of 8 
 gamma_10hz = 0.95; 
 gamma = gamma_10hz^(1/1.5); % YOUR GAMMA GOES HERE %%%%%%%%%%%%%%%%%%%%%%%%
