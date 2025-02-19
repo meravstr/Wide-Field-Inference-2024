@@ -54,7 +54,7 @@ act_odd = act_matrix(odd_indx,:);
 act_even = act_matrix(even_indx,:);
 
 % deconvolve with different penalties
-for i_lambda = 1:length(all_lambda)
+parfor i_lambda = 1:length(all_lambda)
      lambda = all_lambda(i_lambda);
      [r_inferred_convar_odd,beta0_odd,r0_odd] = convar(act_odd,gamma_d,lambda);
      [r_inferred_convar_even,beta0_even,r0_even] = convar(act_even,gamma_d,lambda);
@@ -74,9 +74,9 @@ for i_lambda = 1:length(all_lambda)
     act_odd_nodc = act_odd-repmat(mean(act_odd,1),t_trace/2,1);
 
     % check deviations from predictions
-    err_cf_oe = (predicts_c_odd_nodc-act_even_nodc(2:end,:)).^2;
+    err_cf_oe = (predicts_c_even_nodc-act_even_nodc(1:end-1,:)).^2;
     mean_err_cf_oe_per_trial = (2/t_trace)*sum(err_cf_oe,1);
-    err_cf_eo = (predicts_c_even_nodc-act_odd_nodc(2:end,:)).^2;
+    err_cf_eo = (predicts_c_odd_nodc-act_odd_nodc(2:end,:)).^2;
     mean_err_cf_eo_per_trial = (2/t_trace)*sum(err_cf_eo,1);
     mean_err_cf_per_trial = (mean_err_cf_oe_per_trial+mean_err_cf_eo_per_trial)/2;
     std_err_cf_per_trial = sqrt(((mean_err_cf_oe_per_trial-mean_err_cf_per_trial).^2+(mean_err_cf_eo_per_trial-mean_err_cf_per_trial).^2)/2);
